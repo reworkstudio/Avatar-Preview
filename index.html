@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Avatar Preview Tool</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
     :root {
@@ -156,11 +156,11 @@
 
   <div class="upload-area" id="upload-area">
     Drag your image here or click to choose a file
-    <input type="file" id="upload-input" accept="image/*">
+    <input type="file" id="upload-input" accept="image/*" />
   </div>
 
   <div class="crop-container" id="crop-container">
-    <img id="image">
+    <img id="image" />
     <button class="button" id="crop-button">Crop</button>
   </div>
 
@@ -226,20 +226,44 @@
           viewMode: 1,
           autoCropArea: 1,
         });
+        previews.style.display = 'none';
       };
       reader.readAsDataURL(file);
     }
 
     cropButton.addEventListener('click', () => {
       if (!cropper) return;
-      const canvas = cropper.getCroppedCanvas({ width: 240, height: 240 });
+
+      const cropData = cropper.getData(true);
+      const naturalWidth = cropData.width;
+      const naturalHeight = cropData.height;
+
+      const maxSize = 512;
+
+      let outputWidth = naturalWidth;
+      let outputHeight = naturalHeight;
+
+      if (naturalWidth > maxSize || naturalHeight > maxSize) {
+        const scale = Math.min(maxSize / naturalWidth, maxSize / naturalHeight);
+        outputWidth = Math.round(naturalWidth * scale);
+        outputHeight = Math.round(naturalHeight * scale);
+      }
+
+      const canvas = cropper.getCroppedCanvas({
+        width: outputWidth,
+        height: outputHeight
+      });
+
       currentImageData = canvas.toDataURL();
+
       circlePreview.style.backgroundImage = `url(${currentImageData})`;
       circlePreview.style.backgroundSize = 'cover';
       circlePreview.style.backgroundPosition = 'center';
+
       squarePreview.style.backgroundImage = `url(${currentImageData})`;
       squarePreview.style.backgroundSize = 'cover';
       squarePreview.style.backgroundPosition = 'center';
+
       previews.style.display = 'flex';
     });
 
@@ -250,7 +274,6 @@
       canvas.height = 240;
       const ctx = canvas.getContext('2d');
 
-      // Draw circle mask
       ctx.beginPath();
       ctx.arc(120, 120, 120, 0, 2 * Math.PI);
       ctx.closePath();
@@ -276,7 +299,6 @@
       link.click();
     });
 
-    // Theme switcher
     themeToggle.addEventListener('click', () => {
       const html = document.documentElement;
       const current = html.getAttribute('data-theme');
