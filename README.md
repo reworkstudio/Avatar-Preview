@@ -5,7 +5,7 @@ A simple website that lets you preview how your avatar will look before setting 
 ## How to open the site
 
 The site is available at:  
-[https://reworkstudio.github.io/Initial-Avatar-Generator/](https://reworkstudio.github.io/Avatar-Preview/)
+https://reworkstudio.github.io/Avatar-Preview/
 
 ## How to use
 
