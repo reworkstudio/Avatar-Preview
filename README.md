@@ -1,7 +1,22 @@
-# avatar-preview
+# Avatar Preview
 
-This website lets you quickly see how your avatar will look in a circle (Telegram, Discord) and a square (Instagram, Steam) before setting it publicly. Just upload your image to instantly preview it in both formats.
+A simple website that lets you preview how your avatar will look before setting it on social media.
 
-- Simple and minimal interface
-- Preview in both circle and square formats at once
-- Works in your browser; images are not saved!!
+## How to open the site
+
+The site is available at:  
+[https://reworkstudio.github.io/Initial-Avatar-Generator/](https://reworkstudio.github.io/Avatar-Preview/)
+
+## How to use
+
+1. Open the site using the link above.
+2. Follow the on-screen instructions to see what your avatar will look like.
+
+## Project structure
+
+- `index.html` — The main page of the site.
+- Other files — resources for the site (styles, scripts, etc.).
+
+---
+
+Built with GitHub Pages.
