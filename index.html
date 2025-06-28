@@ -5,7 +5,6 @@
   <title>Avatar Preview Tool</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Styles -->
   <style>
     :root {
       --bg: #f9f9f9;
@@ -92,10 +91,12 @@
       object-fit: cover;
       background: #eee;
       border: 1px solid var(--border);
+      margin-bottom: 8px;
     }
 
     .circle {
       border-radius: 50%;
+      overflow: hidden;
     }
 
     .button {
@@ -110,6 +111,22 @@
 
     .button:hover {
       background: var(--hover-dark);
+    }
+
+    .download-button {
+      margin-top: 6px;
+      padding: 6px 12px;
+      font-size: 14px;
+      background: transparent;
+      color: var(--hover);
+      border: 1px solid var(--hover);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .download-button:hover {
+      background: var(--hover);
+      color: white;
     }
 
     input[type="file"] {
@@ -150,11 +167,11 @@
   <div class="previews" id="previews" style="display: none;">
     <div class="preview">
       <div class="avatar circle" id="circle-preview"></div>
-      <p>Circle View</p>
+      <button class="download-button" id="download-circle">⬇️ Download Circle</button>
     </div>
     <div class="preview">
       <div class="avatar" id="square-preview"></div>
-      <p>Square View</p>
+      <button class="download-button" id="download-square">⬇️ Download Square</button>
     </div>
   </div>
 
@@ -169,8 +186,11 @@
     const squarePreview = document.getElementById('square-preview');
     const previews = document.getElementById('previews');
     const themeToggle = document.getElementById('theme-toggle');
+    const downloadCircle = document.getElementById('download-circle');
+    const downloadSquare = document.getElementById('download-square');
 
     let cropper;
+    let currentImageData = null;
 
     uploadArea.addEventListener('click', () => uploadInput.click());
 
@@ -213,14 +233,47 @@
     cropButton.addEventListener('click', () => {
       if (!cropper) return;
       const canvas = cropper.getCroppedCanvas({ width: 240, height: 240 });
-      const dataUrl = canvas.toDataURL();
-      circlePreview.style.backgroundImage = `url(${dataUrl})`;
+      currentImageData = canvas.toDataURL();
+      circlePreview.style.backgroundImage = `url(${currentImageData})`;
       circlePreview.style.backgroundSize = 'cover';
       circlePreview.style.backgroundPosition = 'center';
-      squarePreview.style.backgroundImage = `url(${dataUrl})`;
+      squarePreview.style.backgroundImage = `url(${currentImageData})`;
       squarePreview.style.backgroundSize = 'cover';
       squarePreview.style.backgroundPosition = 'center';
       previews.style.display = 'flex';
+    });
+
+    downloadCircle.addEventListener('click', () => {
+      if (!currentImageData) return;
+      const canvas = document.createElement('canvas');
+      canvas.width = 240;
+      canvas.height = 240;
+      const ctx = canvas.getContext('2d');
+
+      // Draw circle mask
+      ctx.beginPath();
+      ctx.arc(120, 120, 120, 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.clip();
+
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, 240, 240);
+        const dataURL = canvas.toDataURL();
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'avatar-circle.png';
+        link.click();
+      };
+      img.src = currentImageData;
+    });
+
+    downloadSquare.addEventListener('click', () => {
+      if (!currentImageData) return;
+      const link = document.createElement('a');
+      link.href = currentImageData;
+      link.download = 'avatar-square.png';
+      link.click();
     });
 
     // Theme switcher
